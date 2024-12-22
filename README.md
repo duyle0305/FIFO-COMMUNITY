@@ -27,3 +27,4 @@ Capstone Project FPTU 2024
 - [ ] Event detail page
 - [ ] Recommended creator
 - [ ] Profile User [Posts, Medias, Replies]
+- Reward
