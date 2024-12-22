@@ -1,16 +1,18 @@
+import type { Response } from '@/types';
+import type { RefreshTokenResponse } from '@/types/auth';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+
+import { message as $message } from 'antd';
+import axios from 'axios';
+import Qs from 'qs';
+
 import { ApiConfigs, ApiPaths } from '@/consts/apis';
 import { LocalStorageKeys } from '@/consts/local-storage';
 import store from '@/stores';
 import { setGlobalState } from '@/stores/global';
-import { Response } from '@/types';
-import { RefreshTokenResponse } from '@/types/auth';
 import { historyNavigation } from '@/utils/common';
 import { API_PATH } from '@/utils/env';
 import { PATHS } from '@/utils/paths';
-import { message as $message } from 'antd';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
-import axios from 'axios';
-import Qs from 'qs';
 
 export type BaseResponse<T = any> = Promise<Response<T>>;
 
@@ -36,6 +38,7 @@ axiosInstance.interceptors.request.use(
 
     error => {
         setLoadingState(false);
+
         return Promise.reject(error);
     },
 );
@@ -86,6 +89,7 @@ axiosInstance.interceptors.response.use(
                 const { success, entity } = res;
 
                 isRefreshToken = false;
+
                 if (success && entity && entity.accessToken) {
                     const { accessToken } = entity;
 
