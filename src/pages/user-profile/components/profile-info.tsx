@@ -138,9 +138,9 @@ export const ProfileInfo = ({ setIsShowReportReasons }: ProfileInfoProps) => {
                 </Flex>
             </div>
             <Flex vertical gap={8}>
-                <Typography.Title level={4}>{userInfo?.username || accountInfo?.username}</Typography.Title>
-                <Typography.Text type="secondary">@{userInfo?.handle || accountInfo?.handle}</Typography.Text>
-                <Typography.Text>#Beingnobody_goingnowhere.</Typography.Text>
+                <Typography.Title level={4}>{userInfo?.username}</Typography.Title>
+                <Typography.Text type="secondary">{userInfo?.handle}</Typography.Text>
+                <Typography.Text>{userInfo?.bio}</Typography.Text>
                 <Flex gap={24}>
                     <Space size="small" onClick={() => navigate(PATHS.FOLLOWING, { state: { id: id } })}>
                         <Typography.Text>{follows?.length}</Typography.Text>
