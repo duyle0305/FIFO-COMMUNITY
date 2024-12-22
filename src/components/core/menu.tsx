@@ -1,13 +1,24 @@
-import type { FC } from 'react';
+// import type { FC } from 'react';
 
-import { Menu, MenuProps } from 'antd';
+// import { Menu, MenuProps } from 'antd';
+
+// interface BaseMenuProps extends MenuProps {}
+
+// const DefaultMenu: FC<BaseMenuProps> = props => {
+//     return <Menu {...props} />;
+// };
+
+// const BaseMenu = Object.assign(Menu, DefaultMenu);
+
+// export default BaseMenu;
+import type { MenuProps } from 'antd';
+import type { FC } from 'react';
+import { Menu } from 'antd';
 
 interface BaseMenuProps extends MenuProps {}
 
 const DefaultMenu: FC<BaseMenuProps> = props => {
     return <Menu {...props} />;
 };
-
 const BaseMenu = Object.assign(Menu, DefaultMenu);
-
 export default BaseMenu;
