@@ -18,14 +18,7 @@ export const RecommendedCreatorList = () => {
     return (
         <Card
             title={
-                <Flex
-                    align="center"
-                    gap={4}
-                    onClick={() => navigate(PATHS.RECOMMENDATIONS)}
-                    style={{
-                        cursor: 'pointer',
-                    }}
-                >
+                <Flex align="center" gap={4} onClick={() => navigate(PATHS.RECOMMENDATIONS)}>
                     Recommended creator
                     <img src={ArrowRightSvg} />
                 </Flex>
@@ -33,6 +26,7 @@ export const RecommendedCreatorList = () => {
             style={{
                 width: 326,
                 height: 'fit-content',
+                cursor: 'pointer',
             }}
             className="card-menu card-events"
         >
