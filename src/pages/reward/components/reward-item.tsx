@@ -1,20 +1,24 @@
+import type { RootState } from '@/stores';
+import type { OnAction } from '@/types';
+import type { RedeemDocument } from '@/types/redeem/redeem';
+import type { FC } from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
+import { Divider, Flex, Modal, Space, Typography } from 'antd';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import PlaceholderSvg from '/public/placeholder.svg';
 import RewardCard from '@/components/core/reward-card';
 import { SecondaryButton } from '@/components/core/secondary-button';
-import { useCreateRedeem } from '@/hooks/mutate/redeem/use-create-redeem';
-import { RootState } from '@/stores';
-import { RedeemDocument } from '@/types/redeem/redeem';
-import { Divider, Flex, Modal, Space, Typography } from 'antd';
-import { FC, useState } from 'react';
-import { useSelector } from 'react-redux';
-import PlaceholderSvg from '/public/placeholder.svg';
-import { useMessage } from '@/hooks/use-message';
-import { useQueryClient } from '@tanstack/react-query';
-import { walletKeys } from '@/consts/factory/wallet';
-import { useGetWalletByAccount } from '@/hooks/query/wallet/use-get-wallet-by-account';
 import { redeemKeys } from '@/consts/factory/redeem';
-import { OnAction } from '@/types';
+import { walletKeys } from '@/consts/factory/wallet';
+import { useCreateRedeem } from '@/hooks/mutate/redeem/use-create-redeem';
+import { useGetWalletByAccount } from '@/hooks/query/wallet/use-get-wallet-by-account';
+import { useMessage } from '@/hooks/use-message';
+import { numberFormat } from '@/utils/number';
 import { PATHS } from '@/utils/paths';
-import { useNavigate } from 'react-router-dom';
 
 const { confirm } = Modal;
 
@@ -50,13 +54,13 @@ const RewardItem: FC<RewardItemProps> = ({ reward, onClick }) => {
                                 marginTop: 24,
                             }}
                         >
-                            -{price} MC
+                            -{numberFormat(price, '.')}
                         </Typography.Title>
                     </Flex>
                     <Divider />
                     <Flex justify="space-between">
                         <Typography.Title level={4}>Balance:</Typography.Title>
-                        <Typography.Title level={4}>{wallet?.balance} MC</Typography.Title>
+                        <Typography.Title level={4}>{numberFormat(wallet?.balance, '.')} MC</Typography.Title>
                     </Flex>
                     <Flex justify="space-between">
                         <Typography.Title
@@ -73,7 +77,7 @@ const RewardItem: FC<RewardItemProps> = ({ reward, onClick }) => {
                                 color: (wallet?.balance || 0) - price < 0 ? 'red' : 'black',
                             }}
                         >
-                            {(wallet?.balance || 0) - price} MC
+                            {numberFormat((wallet?.balance || 0) - price, '.')} MC
                         </Typography.Title>
                     </Flex>
                     <Divider />
@@ -123,7 +127,8 @@ const RewardItem: FC<RewardItemProps> = ({ reward, onClick }) => {
         >
             <Space direction="vertical" size={10}>
                 <Typography.Title level={4}>{name}</Typography.Title>
-                <Typography.Text style={{ color: '#FF6934' }}>{price} MC</Typography.Text>
+                <Typography.Text style={{ color: '#FF6934' }}>{numberFormat(price, '.')} MC</Typography.Text>
+                {/* <Typography.Text type="secondary">{price} MC</Typography.Text> */}
             </Space>
 
             <Flex justify="flex-end">
