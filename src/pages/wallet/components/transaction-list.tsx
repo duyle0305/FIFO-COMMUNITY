@@ -19,6 +19,7 @@ type FormatTransaction = {
     amount: number;
     createdDate: string;
     transactionType?: string;
+    status?: string;
 };
 
 const TransactionList = () => {
@@ -39,6 +40,7 @@ const TransactionList = () => {
             type: 'Bonus Point',
             amount: bonusPoint.pointEarned,
             createdDate: bonusPoint.createdDate,
+            status: 'SUCCESS',
         })) || [];
 
     const dailyPointsTransactions: FormatTransaction[] =
@@ -48,6 +50,7 @@ const TransactionList = () => {
             type: 'Daily Point',
             amount: dailyPoint.pointEarned,
             createdDate: dailyPoint.createdDate,
+            status: 'SUCCESS',
         })) || [];
 
     const transactionList: FormatTransaction[] =
@@ -58,16 +61,21 @@ const TransactionList = () => {
             amount: transaction.amount,
             createdDate: transaction.createdDate,
             transactionType: transaction?.transactionType,
+            status: 'SUCCESS',
         })) || [];
 
-    const orderPointTransactions: FormatTransaction[] =
-        data?.orderPointList?.map(orderPoint => ({
+    const orderPointTransactions: FormatTransaction[] = (data?.orderPointList || []) // Use an empty array if data is nullish
+        .filter(orderPoint => {
+            return !params.status || orderPoint.status === params.status;
+        })
+        .map(orderPoint => ({
             id: orderPoint?.orderId,
             title: '',
             type: 'Order Point',
             amount: orderPoint?.monkeyCoinPack?.point,
             createdDate: orderPoint.orderDate,
-        })) || [];
+            status: orderPoint?.status, // Make sure status is included
+        }));
 
     const allTransactions = [
         ...bonusPointsTransactions,
@@ -175,7 +183,7 @@ const TransactionList = () => {
                         description={transaction?.type}
                         title={transaction?.title}
                         createdDate={transaction?.createdDate}
-                        status={transaction?.transactionType ? 'SUCCESS' : 'FAILED'}
+                        status={transaction?.status || ''}
                     />
                 ))}
             </Flex>

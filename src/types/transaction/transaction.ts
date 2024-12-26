@@ -1,38 +1,38 @@
-import { Pack } from "../pack/pack";
-import { Post } from "../post/post";
-import { RedeemDocument } from "../redeem/redeem";
+import type { Pack } from '../pack/pack';
+import type { Post } from '../post/post';
+import type { RedeemDocument } from '../redeem/redeem';
 
 export type Transaction = {
     transactionId: string;
     amount: number;
     type: string;
-    createdDate: string
-    reward: RedeemDocument
-    transactionType: string
+    createdDate: string;
+    reward: RedeemDocument;
+    transactionType: string;
 };
 
 export type DailyPointTransaction = {
-    dailyPointId: string,
-    pointEarned: number,
-    createdDate: string
-    post: Post
-}
+    dailyPointId: string;
+    pointEarned: number;
+    createdDate: string;
+    post: Post;
+};
 
 export type BonusPoint = {
-    dailyPointId: string,
-    pointEarned: number,
-    createdDate: string
-    post: Post
-}
+    dailyPointId: string;
+    pointEarned: number;
+    createdDate: string;
+    post: Post;
+};
 
-export type OrderPointTransaction = { 
-    orderId: string
+export type OrderPointTransaction = {
+    orderId: string;
     amount: number;
     method: string;
     status: string;
     orderDate: string;
-    monkeyCoinPack: Pack
-}
+    monkeyCoinPack: Pack;
+};
 
 export type FilterTransaction = {
     transactionList: Transaction[];
