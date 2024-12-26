@@ -1,17 +1,20 @@
+import type { RootState } from '@/stores';
+import type { SignUpRequest } from '@/types/auth';
+import type { FormProps } from 'antd';
+import type { FC } from 'react';
+
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
+import { App, Divider, Form, Input } from 'antd';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
 import GooglIcon from '@/assets/icons/Google.svg';
 import AuthFormWrapper from '@/components/authen/form-wrapper';
 import AuthPageLayout from '@/components/authen/layout';
 import BaseButton from '@/components/core/button';
 import { useSignUp } from '@/hooks/mutate/auth/use-signup';
-import { RootState } from '@/stores';
-import { SignUpRequest } from '@/types/auth';
 import { PATHS } from '@/utils/paths';
-import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
-import { css } from '@emotion/react';
-import { App, Divider, Form, FormProps, Input } from 'antd';
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
 
 type FieldType = {
     username: string;
@@ -34,6 +37,7 @@ const SignUpPage: FC = () => {
         if (value && value !== password) {
             return Promise.reject(new Error('Passwords do not match!'));
         }
+
         return Promise.resolve();
     };
 
@@ -52,14 +56,14 @@ const SignUpPage: FC = () => {
         signup(req, {
             onSuccess: result => {
                 if (result) {
-                    message.success('Registration account successfully');
+                    // message.success('Registration account successfully');
                     localStorage.setItem('email', values.email);
                     navigate(PATHS.OTP_VERIFICATION);
                 }
             },
             onError: error => {
                 message.error(error.message);
-            }
+            },
         });
     };
 
@@ -139,7 +143,14 @@ const SignUpPage: FC = () => {
                         <span>Or</span>
                     </Divider>
 
-                    <BaseButton htmlType='button' size="large" variant="outlined" shape="round" className="btn-google" disabled={loading}>
+                    <BaseButton
+                        htmlType="button"
+                        size="large"
+                        variant="outlined"
+                        shape="round"
+                        className="btn-google"
+                        disabled={loading}
+                    >
                         <img src={GooglIcon}></img>
                         <span>Google</span>
                     </BaseButton>

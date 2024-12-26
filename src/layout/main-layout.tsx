@@ -91,14 +91,17 @@ import { EventsWrapper } from '@/pages/home/layout/events-wrapper';
 import { MenuWrapper } from '@/pages/home/layout/menu-wrapper';
 import { PageWrapper } from '@/pages/home/layout/page-wrapper';
 import HeaderComponent from '@/pages/layout/header/header';
+
 interface MainLayoutProps {
     children?: React.ReactNode;
 }
+
 const MainLayout: FC<MainLayoutProps> = ({ children = <Outlet /> }) => {
     const navigate = useNavigate();
     // load profile
     const { data: profileData, isLoading: isProfileLoading } = useProfile();
     const { data: walletData, isLoading: isWalletLoading } = useWallet();
+
     return (
         <ConfigProvider theme={themeConfig}>
             <Layout>
@@ -130,4 +133,5 @@ const MainLayout: FC<MainLayoutProps> = ({ children = <Outlet /> }) => {
         </ConfigProvider>
     );
 };
+
 export default MainLayout;

@@ -63,6 +63,30 @@ const RenderRouter: FC = () => {
 
     const routes: RouteObject[] = [
         {
+            path: PATHS.SIGNIN,
+            element: <WrapperRouteComponent element={<SignInPage />} title="Signin Page" />,
+        },
+        {
+            path: PATHS.SIGNUP,
+            element: <WrapperRouteComponent element={<SignUpPage />} title="Signup Page" />,
+        },
+        {
+            path: PATHS.FORGOT_PASSWORD,
+            element: <WrapperRouteComponent element={<ForgotPasswordPage />} title="Forgot password" />,
+        },
+        {
+            path: PATHS.OTP_RESET_PASSWORD,
+            element: <WrapperRouteComponent element={<VerifyOtpResetPasswordPage />} title="OTP Reset Password" />,
+        },
+        {
+            path: PATHS.CREATE_NEW_PASSWORD,
+            element: <WrapperRouteComponent element={<CreateNewPasswordPage />} title="Create new password" />,
+        },
+        {
+            path: PATHS.OTP_VERIFICATION,
+            element: <WrapperRouteComponent element={<OTPVerificationPage />} title="OTP Verification" />,
+        },
+        {
             path: PATHS.HOME,
             element: (
                 <WrapperRouteComponent
@@ -193,30 +217,7 @@ const RenderRouter: FC = () => {
                 },
             ],
         },
-        {
-            path: PATHS.SIGNIN,
-            element: <WrapperRouteComponent element={<SignInPage />} title="Signin Page" />,
-        },
-        {
-            path: PATHS.SIGNUP,
-            element: <WrapperRouteComponent element={<SignUpPage />} title="Signup Page" />,
-        },
-        {
-            path: PATHS.FORGOT_PASSWORD,
-            element: <WrapperRouteComponent element={<ForgotPasswordPage />} title="Forgot password" />,
-        },
-        {
-            path: PATHS.OTP_RESET_PASSWORD,
-            element: <WrapperRouteComponent element={<VerifyOtpResetPasswordPage />} title="OTP Reset Password" />,
-        },
-        {
-            path: PATHS.CREATE_NEW_PASSWORD,
-            element: <WrapperRouteComponent element={<CreateNewPasswordPage />} title="Create new password" />,
-        },
-        {
-            path: PATHS.OTP_VERIFICATION,
-            element: <WrapperRouteComponent element={<OTPVerificationPage />} title="OTP Verification" />,
-        },
+
         {
             path: '*',
             element: <NotFoundPage />,
