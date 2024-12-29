@@ -1,22 +1,9 @@
-import { SecondaryButton } from '@/components/core/secondary-button';
-import ToggleTruncateTextTypography from '@/components/post/toggle-truncate-text-typography';
-import { DATE_FORMAT, DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/consts/common';
-import { categoryKeys } from '@/consts/factory/category';
-import { redeemKeys } from '@/consts/factory/redeem';
-import { useCreateCategory } from '@/hooks/mutate/category/use-create-category';
-import { useDeleteCategory } from '@/hooks/mutate/category/use-delete-category';
-import { useUpdateCategory } from '@/hooks/mutate/category/use-update-category';
-import { useCreateReward } from '@/hooks/mutate/redeem/use-create-redeem';
-import { useDeleteRedeem } from '@/hooks/mutate/redeem/use-delete-redeem';
-import { useUpdateReward } from '@/hooks/mutate/redeem/use-update-redeem';
-import { useCategoriesListing, useCategory } from '@/hooks/query/category/use-category-listing';
-import { useGetRewards } from '@/hooks/query/redeem/use-my-reward';
-import { useRewardDetail } from '@/hooks/query/redeem/use-redeem-documents';
-import { useMessage } from '@/hooks/use-message';
-import { useUploadFile } from '@/hooks/use-upload-file';
-import { RootState } from '@/stores';
-import { Category, CreateCategoryPayload } from '@/types/category/category';
-import { RedeemDocument } from '@/types/redeem/redeem';
+import type { RootState } from '@/stores';
+import type { RedeemDocument } from '@/types/redeem/redeem';
+import type { UploadProps } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import type { UploadFile } from 'antd/lib';
+
 import { CameraOutlined, DeleteOutlined, EditOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -35,13 +22,30 @@ import {
     Tooltip,
     Typography,
     Upload,
-    UploadProps,
 } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import { UploadFile } from 'antd/lib';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { SecondaryButton } from '@/components/core/secondary-button';
+import { getFileNameFromUrl } from '@/components/post/post-item';
+import ToggleTruncateTextTypography from '@/components/post/toggle-truncate-text-typography';
+import { DATE_FORMAT, DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/consts/common';
+import { categoryKeys } from '@/consts/factory/category';
+import { redeemKeys } from '@/consts/factory/redeem';
+import { useCreateCategory } from '@/hooks/mutate/category/use-create-category';
+import { useDeleteCategory } from '@/hooks/mutate/category/use-delete-category';
+import { useUpdateCategory } from '@/hooks/mutate/category/use-update-category';
+import { useCreateReward } from '@/hooks/mutate/redeem/use-create-redeem';
+import { useDeleteRedeem } from '@/hooks/mutate/redeem/use-delete-redeem';
+import { useUpdateReward } from '@/hooks/mutate/redeem/use-update-redeem';
+import { useCategoriesListing, useCategory } from '@/hooks/query/category/use-category-listing';
+import { useGetRewards } from '@/hooks/query/redeem/use-my-reward';
+import { useRewardDetail } from '@/hooks/query/redeem/use-redeem-documents';
+import { useMessage } from '@/hooks/use-message';
+import { useUploadFile } from '@/hooks/use-upload-file';
+import { Category, CreateCategoryPayload } from '@/types/category/category';
+import { numberFormat } from '@/utils/number';
 
 const { confirm } = Modal;
 
@@ -144,6 +148,7 @@ const AdminRewardPage = () => {
             title: 'Price',
             dataIndex: 'price',
             key: 'price',
+            render: (price: number) => numberFormat(price, ',') + ' MC',
         },
         {
             title: 'Created Date',
@@ -177,8 +182,10 @@ const AdminRewardPage = () => {
 
     const onRemoveFile = (file: UploadFile) => {
         const index = fileList.indexOf(file);
+
         if (index > -1) {
             const newImgUrlList = imgUrlList.slice();
+
             newImgUrlList.splice(index, 1);
             setImgUrlList(newImgUrlList);
             setFileList(fileList.filter(item => item.uid !== file.uid));
@@ -191,8 +198,10 @@ const AdminRewardPage = () => {
 
     const onRemoveAnotherFile = (file: UploadFile) => {
         const index = anotherFileList.indexOf(file);
+
         if (index > -1) {
             const newImgUrlList = urlFileList.slice();
+
             newImgUrlList.splice(index, 1);
             setUrlFileList(newImgUrlList);
             setAnotherFileList(anotherFileList.filter(item => item.uid !== file.uid));
@@ -204,7 +213,7 @@ const AdminRewardPage = () => {
             {
                 ...values,
                 image: imgUrlList[0],
-                linkSourceCode: urlFileList[0]
+                linkSourceCode: urlFileList[0],
             },
             {
                 onSuccess: () => {
@@ -218,7 +227,7 @@ const AdminRewardPage = () => {
                     setAnotherFileList([]);
                     setPreviewImage('');
                 },
-                onError: (err) => {
+                onError: err => {
                     message.error(err?.message || 'Reward creation failed');
                 },
             },
@@ -244,7 +253,7 @@ const AdminRewardPage = () => {
                     setAnotherFileList([]);
                     setPreviewImage('');
                 },
-                onError: (err) => {
+                onError: err => {
                     message.error(err?.message || 'Reward update failed');
                 },
             },
@@ -265,7 +274,7 @@ const AdminRewardPage = () => {
                 name: detail.name,
                 description: detail.description,
                 price: detail.price,
-                linkSourceCode: detail.linkSourceCode
+                linkSourceCode: detail.linkSourceCode,
             });
             setImgUrlList([detail.image]);
             setFileList([
@@ -543,7 +552,13 @@ const AdminRewardPage = () => {
                                     </Tooltip>
                                 </Upload>
                             </Form.Item>
-                            <Upload fileList={anotherFileList} onRemove={onRemoveAnotherFile} />
+                            <Upload
+                                fileList={anotherFileList.map(file => ({
+                                    ...file,
+                                    name: file.url ? getFileNameFromUrl(file.url) : file.name,
+                                }))}
+                                onRemove={onRemoveAnotherFile}
+                            ></Upload>
                         </Col>
                     </Row>
 

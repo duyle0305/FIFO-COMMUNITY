@@ -64,6 +64,7 @@ const Transactions: FC = () => {
             type: 'Bonus Point',
             amount: bonusPoint.pointEarned,
             createdDate: bonusPoint.createdDate,
+            status: 'SUCCESS',
         })) || [];
 
     const dailyPointsTransactions: FormatTransaction[] =
@@ -74,17 +75,38 @@ const Transactions: FC = () => {
             type: 'Daily Point',
             amount: dailyPoint.pointEarned,
             createdDate: dailyPoint.createdDate,
+            status: 'SUCCESS',
         })) || [];
 
     const transactionList: FormatTransaction[] =
         data?.transactionList?.map(transaction => ({
             id: transaction?.transactionId,
-            title: transaction?.reward?.name,
+            title:
+                transaction.transactionType === 'REDEEM_REWARD'
+                    ? 'Exchange Source'
+                    : transaction.transactionType === 'POST_VIOLATION'
+                    ? 'Report Post'
+                    : transaction.transactionType === 'DOWNLOAD_SOURCECODE'
+                    ? 'Download File'
+                    : transaction.transactionType === 'DELETE_POST'
+                    ? 'Post was deleted'
+                    : transaction.transactionType, // Default to transactionType if no match
             image: accountInfo?.avatar || '',
-            type: transaction.type,
+
+            type: 'Transaction',
+            // transaction.transactionType === 'REDEEM_REWARD'
+            //     ? 'Transaction'
+            //     : transaction.transactionType === 'POST_VIOLATION'
+            //     ? 'Transaction'
+            //     : transaction.transactionType === 'DOWNLOAD_SOURCECODE'
+            //     ? 'Transaction'
+            //     : transaction.transactionType === 'DELETE_POST'
+            //     ? 'Transaction'
+            //     : '', // Consider a default type or leave empty if none apply
             amount: transaction.amount,
             createdDate: transaction.createdDate,
             transactionType: transaction?.transactionType,
+            status: 'SUCCESS',
         })) || [];
 
     const orderPointTransactions: FormatTransaction[] =
@@ -178,6 +200,11 @@ const Transactions: FC = () => {
             dataIndex: 'image',
             key: 'image',
             render: (text: string) => <Avatar src={text} size={50} />,
+        },
+        {
+            title: 'Type',
+            dataIndex: 'type',
+            key: 'type',
         },
         {
             title: 'Title',

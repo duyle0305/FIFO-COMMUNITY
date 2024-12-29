@@ -1,15 +1,19 @@
-import BaseMenu from '@/components/core/menu';
+import type { RootState } from '@/stores';
+import type { GetProp, MenuProps } from 'antd';
+
 import Icon from '@ant-design/icons';
-import { GetProp, MenuProps } from 'antd';
-import WarningSvg from '/public/warning.svg';
-import QuestionMarkSvg from '/public/question-mark.svg';
-import OpenBookSvg from '/public/open-book.svg';
-import RewardSvg from '/public/reward.svg';
-import FeedbackSvg from '/public/feedback.svg';
-import { useNavigate } from 'react-router-dom';
-import { PATHS } from '@/utils/paths';
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/stores';
+import { useNavigate } from 'react-router-dom';
+
+import FeedbackSvg from '/public/feedback.svg';
+import OpenBookSvg from '/public/open-book.svg';
+import QuestionMarkSvg from '/public/question-mark.svg';
+import ReportSvg from '/public/report.svg';
+import RewardSvg from '/public/reward.svg';
+import WarningSvg from '/public/warning.svg';
+import BaseMenu from '@/components/core/menu';
+import { PATHS } from '@/utils/paths';
 
 type MenuItem = GetProp<MenuProps, 'items'>[number];
 
@@ -24,6 +28,7 @@ export const ResourceMenu = () => {
     const toFeedback = () => {
         if (accountInfo?.role?.name === 'STAFF' || accountInfo?.role?.name === 'ADMIN') {
             navigate(PATHS.ADMIN_FEEDBACKS);
+
             return;
         }
 
@@ -65,12 +70,27 @@ export const ResourceMenu = () => {
             label: 'Content Policy',
             onClick: toContentPolicy,
         },
-        {
-            key: '4',
-            icon: <Icon component={() => <img src={RewardSvg} alt="reward" />} />,
-            label: 'Reward',
-            onClick: toReward,
-        },
+        ...(accountInfo?.role?.name === 'USER'
+            ? [
+                  {
+                      key: '4',
+                      icon: <Icon component={() => <img src={RewardSvg} alt="reward" />} />,
+                      label: 'Reward',
+                      onClick: toReward,
+                  },
+              ]
+            : []),
+
+        ...(accountInfo?.role?.name === 'STAFF' || accountInfo?.role?.name === 'ADMIN'
+            ? [
+                  {
+                      key: '4',
+                      icon: <Icon component={() => <img src={RewardSvg} alt="reward" />} />,
+                      label: 'Reward',
+                      onClick: () => navigate(PATHS.ADMIN_REWARDS),
+                  },
+              ]
+            : []),
         {
             key: '5',
             icon: <Icon component={() => <img src={FeedbackSvg} alt="feedback" />} />,
@@ -81,7 +101,7 @@ export const ResourceMenu = () => {
             ? [
                   {
                       key: '6',
-                      icon: <Icon component={() => <img src={FeedbackSvg} alt="feedback" />} />,
+                      icon: <Icon component={() => <img src={ReportSvg} alt="feedback" />} />,
                       label: 'Report',
                       onClick: toReport,
                   },
