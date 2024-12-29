@@ -193,7 +193,7 @@ const HeaderComponent: FC<HeaderProps> = ({ collapsed, toggle }) => {
                     <BaseInput.Search
                         placeholder="Type here to search..."
                         className="search"
-                        onChange={e => setKeyword(e.target.value)}
+                        onChange={e => setKeyword(encodeURIComponent(e.target.value))}
                         // onBlur={() => setOpenSearch(false)}
                         // onFocus={() => setOpenSearch(true)}
                         onKeyDown={handleNavigateWithParams}

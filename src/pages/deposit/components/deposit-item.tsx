@@ -36,7 +36,7 @@ const DepositItem = ({ pack, handleOpenUpdate, setPackId }: DepositItemProps) =>
             },
             {
                 onSuccess: data => {
-                    window.location.href = data?.paymentUrl;
+                    window.open(data?.paymentUrl, '_blank');
                 },
             },
         );

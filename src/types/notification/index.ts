@@ -1,10 +1,11 @@
-import { Account } from "../account";
+import { Account } from '../account';
 
 export interface Notification {
-  notificationId: string;
-  title: string;
-  message: any;
-  createdDate: string;
-  account: Account;
-  read: boolean;
+    notificationId: string;
+    title: string;
+    message: any;
+    createdDate: string;
+    account: Account;
+    read: boolean;
+    commentId: string;
 }

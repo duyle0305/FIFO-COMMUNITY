@@ -13,20 +13,20 @@ const ContentPolicyPage = () => {
               <Typography.Title level={2}>FIFO Content Policy</Typography.Title>
 
               <Typography.Paragraph>
-                  FIFO is a vast network of communities that are created, run, and populated by you, the FIFO users.
+                  Reddit is a vast network of communities that are created, run, and populated by you, the Reddit users.
                   Through these communities, you can post, comment, vote, discuss, learn, debate, support, and connect
-                  with people who share your interests, and we encourage you to find—or even create—your home on FIFO.
+                  with people who share your interests, and we encourage you to find—or even create—your home on Reddit.
               </Typography.Paragraph>
 
               <Typography.Paragraph>
                   While not every community may be for you (and you may find some unrelatable or even offensive), no
-                  community should be used as a weapon. Communities should ceeate a sense of belonging for their
-                  members, not try to diminish it for others. Likewise, everyone on FIFO should have an expectation of
+                  community should be used as a weapon. Communities should create a sense of belonging for their
+                  members, not try to diminish it for others. Likewise, everyone on Reddit should have an expectation of
                   privacy and safety, so please respect the privacy and safety of others.
               </Typography.Paragraph>
 
               <Typography.Paragraph>
-                  Every community on FIFO is defined by its users. Some of these users help manage the community as
+                  Every community on Reddit is defined by its users. Some of these users help manage the community as
                   moderators. The culture of each community is shaped explicitly, by the community rules enforced by
                   moderators, and implicitly, by the upvotes, downvotes, and discussions of its community members.
                   Please abide by the rules of communities in which you participate and do not interfere with those in
@@ -34,12 +34,12 @@ const ContentPolicyPage = () => {
               </Typography.Paragraph>
 
               <Typography.Paragraph>
-                  Below the rules governing each community are the platform-wide rules that apply to everyone on FIFO.
+                  Below the rules governing each community are the platform-wide rules that apply to everyone on Reddit.
                   These rules are enforced by us, the admins.
               </Typography.Paragraph>
 
               <Typography.Paragraph>
-                  FIFO and its communities are only what we make of them together, and can only exist if we operate by
+                  Reddit and its communities are only what we make of them together, and can only exist if we operate by
                   a shared set of rules. We ask that you abide by not just the letter of these rules, but the spirit as
                   well.
               </Typography.Paragraph>
@@ -53,8 +53,8 @@ const ContentPolicyPage = () => {
               <Flex vertical gap={6}>
                   <Typography.Title level={4}>Rule 1</Typography.Title>
                   <Typography.Paragraph>
-                      Remember the human. FIFO is a place for creating community and belonging, not for attacking
-                      marginalized or vulnerable groups of people. Everyone has a right to use FIFO free of 
+                      Remember the human. Reddit is a place for creating community and belonging, not for attacking
+                      marginalized or vulnerable groups of people. Everyone has a right to use Reddit free of 
                       <u>harassment</u>, <u>bullying</u>, and threats of <u>violence</u>. Communities and users that
                       incite violence or that promote hate based on <u>identity or vulnerability</u> will be banned.
                   </Typography.Paragraph>
@@ -66,7 +66,7 @@ const ContentPolicyPage = () => {
                       Abide by community rules. Post authentic content into communities where you have a personal
                       interest, and do not cheat or engage in content manipulation (including <u>spamming</u>, 
                       <u>vote manipulation</u>, ban evasion, or subscriber fraud) or otherwise interfere with or disrupt
-                      FIFO communities.
+                      Reddit communities.
                   </Typography.Paragraph>
               </Flex>
 
@@ -91,7 +91,7 @@ const ContentPolicyPage = () => {
               <Flex vertical gap={6}>
                   <Typography.Title level={4}>Rule 5</Typography.Title>
                   <Typography.Paragraph>
-                      You don’t have to use your real name to use FIFO, but don’t <u>impersonate</u> an individual or
+                      You don’t have to use your real name to use Reddit, but don’t <u>impersonate</u> an individual or
                       an entity in a misleading or deceptive manner.
                   </Typography.Paragraph>
               </Flex>
@@ -99,7 +99,7 @@ const ContentPolicyPage = () => {
               <Flex vertical gap={6}>
                   <Typography.Title level={4}>Rule 6</Typography.Title>
                   <Typography.Paragraph>
-                      Ensure people have predictable experiences on FIFO by properly labeling content and communities,
+                      Ensure people have predictable experiences on Reddit by properly labeling content and communities,
                       particularly content that is graphic, sexually-explicit, or offensive.
                   </Typography.Paragraph>
               </Flex>
@@ -115,7 +115,7 @@ const ContentPolicyPage = () => {
               <Flex vertical gap={6}>
                   <Typography.Title level={4}>Rule 8</Typography.Title>
                   <Typography.Paragraph>
-                      Don’t <u>break the site</u> or do anything that interferes with normal use of FIFO.
+                      Don’t <u>break the site</u> or do anything that interferes with normal use of Reddit.
                   </Typography.Paragraph>
               </Flex>
           </Flex>

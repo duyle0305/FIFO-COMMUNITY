@@ -1,9 +1,10 @@
 import type { FilterTransactionParams } from '@/hooks/query/transaction/use-transactions-current-account';
 import type { RootState } from '@/stores';
+import type { FilterTransaction, Transaction } from '@/types/transaction/transaction';
 import type { FC } from 'react';
 
 import { css } from '@emotion/react';
-import { DatePicker, Flex, Select, Space, Typography } from 'antd';
+import { Avatar, Col, DatePicker, Flex, Select, Space, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { DATE_FORMAT, FULL_TIME_FORMAT } from '@/consts/common';
 import { useRedeemHistory } from '@/hooks/query/redeem/use-redeem-documents';
 import { useTransactionsCurrentAccount } from '@/hooks/query/transaction/use-transactions-current-account';
+import { formatSignedNumber } from '@/utils/number';
 
 import TransactionItem from './transaction-item';
 
@@ -22,20 +24,25 @@ export const TransactionType = {
     order: 'Order Point',
 } as const;
 
-export const TransactionStatus = {
-    success: 'Success',
-    failed: 'Failed',
+export const StatusType = {
+    active: 'Success',
+    inactive: 'Failed',
+} as const;
+
+export const PointType = {
+    Newest: 'Newest On Top',
+    Most: 'Most Points',
+    Least: 'Least Points',
 } as const;
 
 type FormatTransaction = {
-    status: string;
     id: string;
     title: string;
+    image?: string;
     type: string;
     amount: number;
     createdDate: string;
     transactionType?: string;
-    transactionStatus?: string;
 };
 
 const Transactions: FC = () => {
@@ -44,52 +51,52 @@ const Transactions: FC = () => {
         dailyPoint: false,
         bonusPoint: false,
         orderPoint: false,
+        orderPointStatus: 'SUCCESS',
     });
 
     const { accountInfo } = useSelector((state: RootState) => state.account);
     const { data } = useTransactionsCurrentAccount({ params });
 
     const bonusPointsTransactions: FormatTransaction[] =
-        (data?.bonusPoint || []).map(bonusPoint => ({
+        data?.bonusPoint?.map(bonusPoint => ({
             id: bonusPoint?.dailyPointId,
             title: bonusPoint?.post?.title || '',
             type: 'Bonus Point',
             amount: bonusPoint.pointEarned,
             createdDate: bonusPoint.createdDate,
-            status: bonusPoint?.post?.status,
         })) || [];
 
     const dailyPointsTransactions: FormatTransaction[] =
-        (data?.dailyPointList || []).map(dailyPoint => ({
+        data?.dailyPointList?.map(dailyPoint => ({
             id: dailyPoint?.dailyPointId,
             title: dailyPoint?.post?.title || '',
+            image: accountInfo?.avatar || '',
             type: 'Daily Point',
             amount: dailyPoint.pointEarned,
             createdDate: dailyPoint.createdDate,
-            status: dailyPoint?.post?.status,
         })) || [];
 
     const transactionList: FormatTransaction[] =
-        (data?.transactionList || []).map(transaction => ({
+        data?.transactionList?.map(transaction => ({
             id: transaction?.transactionId,
             title: transaction?.reward?.name,
+            image: accountInfo?.avatar || '',
             type: transaction.type,
             amount: transaction.amount,
             createdDate: transaction.createdDate,
             transactionType: transaction?.transactionType,
-            status: transaction?.reward?.status,
         })) || [];
 
-    const orderPointTransactions: FormatTransaction[] = (data?.orderPointList || []) // Use an empty array if data is nullish
-        .filter(orderPoint => !params.status || orderPoint.status.toLowerCase() === params.status.toLowerCase()) // handle case sensitivity if necessary
-        .map(orderPoint => ({
+    const orderPointTransactions: FormatTransaction[] =
+        data?.orderPointList?.map(orderPoint => ({
             id: orderPoint?.orderId,
             title: '',
             type: 'Order Point',
+            image: accountInfo?.avatar || '',
             amount: orderPoint?.monkeyCoinPack?.point,
             createdDate: orderPoint.orderDate,
-            status: orderPoint?.status, // Make sure status is included
-        }));
+            status: orderPoint.status === 'SUCCESS' ? 'SUCCESS' : 'FAILED',
+        })) || [];
 
     const allTransactions = [
         ...bonusPointsTransactions,
@@ -145,26 +152,74 @@ const Transactions: FC = () => {
     };
 
     const handleChangeStatus = (value: string) => {
-        setParams(prev => ({
-            ...prev,
-            status: value, // Directly set the status value
-        }));
+        console.log(value);
+
+        if (value === 'Success') {
+            setParams(prev => ({
+                ...prev,
+                orderPointStatus: 'SUCCESS',
+            }));
+        } else if (value === 'Failed') {
+            setParams(prev => ({
+                ...prev,
+                orderPointStatus: 'FAILED',
+            }));
+        } else {
+            setParams(prev => ({
+                ...params,
+                orderPointStatus: 'SUCCESS',
+            }));
+        }
     };
+
+    const columns = [
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image',
+            render: (text: string) => <Avatar src={text} size={50} />,
+        },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: 'Date',
+            dataIndex: 'createdDate',
+            key: 'createdDate',
+            render: (text: string) => dayjs(text).format(FULL_TIME_FORMAT),
+        },
+        {
+            title: 'Amount',
+            dataIndex: 'amount',
+            key: 'amount',
+            render: (text: number) => (
+                <div style={{ color: text >= 0 ? '#18C07A' : '#FF0000' }}>{formatSignedNumber(text)} MC</div>
+            ),
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+        },
+    ];
 
     return (
         <div css={styles}>
-            <Typography.Text
-                style={{
-                    fontSize: 20,
-                    fontWeight: 500,
-                }}
-            >
-                Last Transaction
-            </Typography.Text>
-            <Flex justify="space-between" className="transaction-header">
-                <p></p>
+            <Col className="transaction-header">
+                <p>
+                    <Typography.Text
+                        style={{
+                            fontSize: 20,
+                            fontWeight: 500,
+                        }}
+                    >
+                        Last Transaction
+                    </Typography.Text>
+                </p>
                 <Flex gap={16}>
-                    <Space>
+                    <div>
                         <Typography.Text>Type:</Typography.Text>
                         <Select
                             allowClear
@@ -177,23 +232,23 @@ const Transactions: FC = () => {
                             }))}
                             onChange={value => handleChangeType(value)}
                         />
-                    </Space>
-                    <Space>
+                    </div>
+                    <div>
                         <Typography.Text>Status:</Typography.Text>
                         <Select
                             allowClear
                             style={{
                                 minWidth: 120,
                             }}
-                            options={Object.keys(TransactionStatus).map(k => ({
-                                label: TransactionStatus[k as keyof typeof TransactionStatus],
-                                value: TransactionStatus[k as keyof typeof TransactionStatus],
+                            options={Object.keys(StatusType).map(k => ({
+                                label: StatusType[k as keyof typeof StatusType],
+                                value: StatusType[k as keyof typeof StatusType],
                             }))}
                             onChange={value => handleChangeStatus(value)}
                         />
-                    </Space>
+                    </div>
 
-                    <Space>
+                    <div>
                         <Typography.Text>Date:</Typography.Text>
                         <DatePicker.RangePicker
                             format={DATE_FORMAT}
@@ -205,11 +260,11 @@ const Transactions: FC = () => {
                                 });
                             }}
                         />
-                    </Space>
+                    </div>
                 </Flex>
-            </Flex>
+            </Col>
             <Flex className="transaction-items" vertical gap={20}>
-                {allTransactions?.map(transaction => (
+                {/* {allTransactions?.map(transaction => (
                     <TransactionItem
                         key={transaction?.id}
                         image={accountInfo?.avatar || ''}
@@ -217,9 +272,9 @@ const Transactions: FC = () => {
                         description={transaction?.type}
                         title={transaction?.title}
                         createdDate={transaction?.createdDate}
-                        status={transaction?.status || ''}
                     />
-                ))}
+                ))} */}
+                <Table columns={columns} dataSource={allTransactions} pagination={false} />
             </Flex>
         </div>
     );

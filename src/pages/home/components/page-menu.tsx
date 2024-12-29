@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import BookMarkSvg from '/public/bookmark.svg';
+import BookMarkSvg from '/public/android.svg';
 import HomeSvg from '/public/home.svg';
 import ExploreSvg from '/public/source-code.svg';
 import BaseMenu from '@/components/core/menu';

@@ -1,13 +1,3 @@
-import type { RootState } from '@/stores';
-import type { FormProps } from 'antd';
-import type { FC } from 'react';
-
-import { MailOutlined } from '@ant-design/icons';
-import { css } from '@emotion/react';
-import { Form, Input } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
 import AuthFormWrapper from '@/components/authen/form-wrapper';
 import AuthPageLayout from '@/components/authen/layout';
 import BaseButton from '@/components/core/button';
@@ -15,6 +5,12 @@ import { useForgetPassword } from '@/hooks/mutate/auth/use-forget-password';
 import { useMessage } from '@/hooks/use-message';
 import { setAccountState } from '@/stores/account';
 import { PATHS } from '@/utils/paths';
+import { MailOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
+import { Form, FormProps, Input } from 'antd';
+import { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 type FieldType = {
     email: string;
@@ -23,7 +19,7 @@ type FieldType = {
 const ForgotPasswordPage: FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { loading } = useSelector((state: RootState) => state.global);
+    const { loading } = useSelector(state => state.global);
 
     const { mutate } = useForgetPassword();
 
@@ -36,7 +32,7 @@ const ForgotPasswordPage: FC = () => {
                 onSuccess: () => {
                     success('Please check your email to reset password');
                     dispatch(setAccountState({ email: values.email }));
-                    navigate(PATHS.OTP_RESET_PASSWORD);
+                    navigate(PATHS.OTP_RESET_PASSWORD)
                 },
                 onError: err => {
                     error(err?.message || 'Something went wrong');

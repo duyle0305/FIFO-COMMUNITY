@@ -1,12 +1,14 @@
+import { Card, Flex, Tag } from 'antd';
+import React from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
+import { PostItem } from '@/components/post/post-item';
 import { UserInfo } from '@/components/user/user-info';
 import { useCategorySearch } from '@/hooks/query/utility/use-category-search';
 import { Account } from '@/types/account';
 import { PATHS } from '@/utils/paths';
-import { Card, Flex, Tag } from 'antd';
-import React from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { PostSummary } from '../home/components/post-summary';
-import { PostItem } from '@/components/post/post-item';
 
 const SearchPage = () => {
     const navigate = useNavigate();
@@ -104,7 +106,11 @@ const SearchPage = () => {
                                     justifyContent: 'center',
                                     cursor: 'pointer',
                                 }}
-                                onClick={() => navigate(`${PATHS.POSTS}?category=${item?.category?.categoryId}&topic=${item.topicId}`)}
+                                onClick={() =>
+                                    navigate(
+                                        `${PATHS.POSTS}?category=${item?.category?.categoryId}&topicId=${item.topicId}`,
+                                    )
+                                }
                             >
                                 {item.name}
                             </Tag>
@@ -116,17 +122,19 @@ const SearchPage = () => {
             {searchData?.postList && searchData?.postList?.length > 0 && (
                 <Card title="Post">
                     <Flex vertical gap={16}>
-                        {searchData?.postList?.map((item, index) => (
-                            <div
-                                style={{
-                                    backgroundColor: '#4799eb0a',
-                                    padding: 16,
-                                    borderRadius: 8,
-                                }}
-                            >
-                                <PostItem key={index} data={item} showActions={false} showLike={false} />
-                            </div>
-                        ))}
+                        {searchData?.postList?.map((item, index) => {
+                            return (
+                                <div
+                                    style={{
+                                        backgroundColor: '#4799eb0a',
+                                        padding: 16,
+                                        borderRadius: 8,
+                                    }}
+                                >
+                                    <PostItem key={index} data={item} showActions={false} showLike={false} />
+                                </div>
+                            );
+                        })}
                     </Flex>
                 </Card>
             )}

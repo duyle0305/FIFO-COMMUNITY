@@ -14,10 +14,9 @@ interface TransactionItemProps {
     description: string;
     amount: number;
     createdDate: string;
-    status: string;
 }
 
-const TransactionItem: FC<TransactionItemProps> = ({ image, title, description, amount, createdDate, status }) => {
+const TransactionItem: FC<TransactionItemProps> = ({ image, title, description, amount, createdDate }) => {
     return (
         <Flex align="center" justify="space-between">
             <Flex align="center" gap={8}>
@@ -57,15 +56,6 @@ const TransactionItem: FC<TransactionItemProps> = ({ image, title, description, 
                     }}
                 >
                     {formatSignedNumber(amount)} MC
-                </div>
-            </Flex>
-            <Flex vertical gap={8} align="center">
-                <div
-                    style={{
-                        color: status === 'SUCCESS' ? '#18C07A' : '#FF0000',
-                    }}
-                >
-                    {status === 'SUCCESS' ? 'SUCCESS' : 'FAILED'}
                 </div>
             </Flex>
         </Flex>

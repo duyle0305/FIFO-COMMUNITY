@@ -1,24 +1,30 @@
-import { SecondaryButton } from '@/components/core/secondary-button';
-import { Avatar, Button, Card, Divider, Dropdown, Flex, Input, Modal, Space, Tag } from 'antd';
-import React, { FC, useState } from 'react';
-import { CreatePost } from '../components/create-post';
+import type { TagListingParams } from '@/hooks/query/tag/use-tags-listing';
+import type { RootState } from '@/stores';
+import type { PostModalType } from '@/stores/post';
+import type { ReportAccountReasons } from '@/types/report/report';
+import type { FC } from 'react';
+
 import { CaretDownFilled } from '@ant-design/icons';
-import { TagListingParams, useTagsListing } from '@/hooks/query/tag/use-tags-listing';
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/consts/common';
-import { useDispatch } from 'react-redux';
-import { PostModalType, setPost } from '@/stores/post';
+import { Avatar, Button, Card, Divider, Dropdown, Flex, Input, Modal, Space, Tag } from 'antd';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { UpdatePost } from '../components/update-post';
-import DraftList from '../components/draft-list';
-import { useTopicsListing } from '@/hooks/query/topic/use-topics-listing';
-import { ReportAccountReasons, reportAccountReasons } from '@/types/report/report';
+
+import PageBreadcrumbs from '@/components/core/page-breadcrumbs';
+import { SecondaryButton } from '@/components/core/secondary-button';
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/consts/common';
 import { useCreateReportPost } from '@/hooks/mutate/report/use-create-report';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/stores';
+import { useCategoriesListing } from '@/hooks/query/category/use-category-listing';
+import { useTagsListing } from '@/hooks/query/tag/use-tags-listing';
+import { useTopicsListing } from '@/hooks/query/topic/use-topics-listing';
 import { useMessage } from '@/hooks/use-message';
 import ReportReason from '@/pages/user-profile/components/report-reason';
-import PageBreadcrumbs from '@/components/core/page-breadcrumbs';
-import { useCategoriesListing } from '@/hooks/query/category/use-category-listing';
+import { setPost } from '@/stores/post';
+import { reportAccountReasons } from '@/types/report/report';
+
+import { CreatePost } from '../components/create-post';
+import DraftList from '../components/draft-list';
+import { UpdatePost } from '../components/update-post';
 
 interface PostWrapperProps {
     children: React.ReactNode;
@@ -73,13 +79,37 @@ export const PostWrapper: FC<PostWrapperProps> = ({ children, showHeader = true 
     };
 
     const handleSelectTopic = (id: string | undefined) => {
-        setSearchParams(params => ({
-            ...params,
-            ...(categoryId && { category: categoryId }),
-            topicId: id,
-            ...(tagId && { tagId }),
-        }));
+        setSearchParams(params => {
+            const newParams = new URLSearchParams();
+
+            if (id === topicId) {
+                // If the selected topic is already active, clear the topicId
+            } else {
+                newParams.append('topicId', id || '');
+            }
+
+            // Retain other parameters
+            categoryId && newParams.append('category', categoryId);
+            tagId && newParams.append('tagId', tagId);
+
+            return newParams;
+        });
     };
+
+    // const handleSelectTopic2 = (id: string | undefined) => {
+    //     setSearchParams(params => {
+    //         const newParams = { ...params };
+
+    //         if (categoryId) {
+    //             newParams.category: categoryId;
+    //         }
+
+    //         newParams.topicId = id; // Set or clear the topicId
+    //         delete newParams.tagId; //Crucially, clear the tagId
+
+    //         return newParams;
+    //     });
+    // };
 
     const handleReportAccount = () => {
         if (!selectedReason) {
@@ -163,11 +193,11 @@ export const PostWrapper: FC<PostWrapperProps> = ({ children, showHeader = true 
                                 </SecondaryButton>
                             </Dropdown>
                             <Flex gap={6} flex={1} align="center">
-                                <Avatar
+                                {/* <Avatar
                                     size={48}
                                     shape="circle"
                                     src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                                />
+                                /> */}
                                 <Input
                                     size="large"
                                     placeholder="Let's share what going on your mind..."

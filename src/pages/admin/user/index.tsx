@@ -3,16 +3,22 @@ import type { Account } from '@/types/account';
 import type { ColumnsType } from 'antd/es/table';
 
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Badge, Button, Card, Flex, Input, Space, Table, Tag, Typography } from 'antd';
+import { Badge, Button, Card, Flex, Input, message, Modal, Space, Table, Tag, Typography } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import BaseInput from '@/components/core/input';
+import { queryClient } from '@/components/provider/query-provider';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@/consts/common';
+import { userKeys } from '@/consts/factory/user';
+import { useDeleteAccount } from '@/hooks/mutate/auth/use-delete-account';
 import { useUsersListing } from '@/hooks/query/user/use-user-listing';
 import { useDebounce } from '@/hooks/use-debounce';
 import { numberFormat } from '@/utils/number';
 import { PATHS } from '@/utils/paths';
+
+const { confirm } = Modal;
 
 const AdminUserPage = () => {
     const navigate = useNavigate();
@@ -26,6 +32,28 @@ const AdminUserPage = () => {
     }, [searchDebounce]);
 
     const { data, isFetching } = useUsersListing({ params: { ...params } });
+
+    const { mutate: deleteAccount, isPending: isPendingDeleteTag } = useDeleteAccount();
+
+    const handleDelete = (id: string) => {
+        confirm({
+            title: 'Do you want to delete this user?',
+            onOk() {
+                deleteAccount(id, {
+                    onSuccess: () => {
+                        message.success('User deleted successfully');
+                        queryClient.invalidateQueries({
+                            queryKey: userKeys.listing(),
+                        });
+                    },
+                    onError: () => {
+                        message.error('Tag deletion failed');
+                    },
+                });
+            },
+            onCancel() {},
+        });
+    };
 
     const columns: ColumnsType<Account> = [
         {
@@ -62,6 +90,7 @@ const AdminUserPage = () => {
             title: 'Created Date',
             dataIndex: 'createdDate',
             key: 'createdDate',
+            render: text => moment(text).format('HH:mm:ss DD/MM/YYYY '),
         },
         {
             title: 'Status',
@@ -79,8 +108,8 @@ const AdminUserPage = () => {
             key: 'action',
             render: (_, record) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => {}} />
-                    <Button danger icon={<DeleteOutlined />} onClick={() => {}} />
+                    {/* <Button icon={<EditOutlined />} onClick={() => {}} /> */}
+                    <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record?.accountId)} />
                 </Space>
             ),
         },

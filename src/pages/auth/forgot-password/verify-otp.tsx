@@ -1,13 +1,3 @@
-import type { RootState } from '@/stores';
-import type { FormProps, GetProps } from 'antd';
-import type { FC } from 'react';
-
-import { css } from '@emotion/react';
-import { Form, Input, message } from 'antd';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
 import AuthFormWrapper from '@/components/authen/form-wrapper';
 import AuthPageLayout from '@/components/authen/layout';
 import AuthResultPage from '@/components/authen/result';
@@ -18,8 +8,14 @@ import {
     useResendOtpForgetPassword,
 } from '@/hooks/mutate/auth/use-otp-verify-forget-password';
 import { useMessage } from '@/hooks/use-message';
+import { RootState } from '@/stores';
 import { SuccessfulIcon } from '@/utils/asset';
 import { PATHS } from '@/utils/paths';
+import { css } from '@emotion/react';
+import { Form, FormProps, GetProps, Input, message } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 type OTPProps = GetProps<typeof Input.OTP>;
 
@@ -69,7 +65,6 @@ const VerifyOtpResetPasswordPage: FC = () => {
             setTimeCount(prev => {
                 if (prev === 0) {
                     clearInterval(interval);
-
                     return 0;
                 }
 
@@ -83,74 +78,75 @@ const VerifyOtpResetPasswordPage: FC = () => {
     return (
         <div css={styles}>
             <AuthPageLayout>
-                {!verifySuccess && ( // Conditionally render OTP form
-                    <AuthFormWrapper
-                        title="OTP Verification"
-                        description="Enter the verification code we just sent on your email address."
-                    >
-                        {timeCount > 0 && (
+                <AuthFormWrapper
+                    title="OTP Verification"
+                    description="Enter the verification code we just sent on your email address."
+                >
+                    {
+                        // expire in 5 minutes format: mm:ss
+                        timeCount > 0 && (
                             <p>
                                 OTP will expire in {Math.floor(timeCount / 60000)}:
                                 {Math.floor((timeCount % 60000) / 1000)
                                     .toString()
                                     .padStart(2, '0')}
                             </p>
-                        )}
-                        <Form form={form} initialValues={{}} onFinish={onFinish} onFinishFailed={onFinishFailed}>
-                            <Form.Item<FieldType> name="otp" rules={[{ required: true, message: 'Please input OTP!' }]}>
-                                <Input.OTP
-                                    autoFocus
-                                    length={4}
-                                    variant="filled"
+                        )
+                    }
+                    <Form form={form} initialValues={{}} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+                        <Form.Item<FieldType> name="otp" rules={[{ required: true, message: 'Please input OTP!' }]}>
+                            <Input.OTP
+                                autoFocus
+                                length={4}
+                                variant="filled"
+                                size="large"
+                                inputMode="numeric"
+                                style={{ width: '100%', fontSize: '22px' }}
+                            />
+                        </Form.Item>
+
+                        <Form.Item>
+                            {timeCount === 0 ? (
+                                <BaseButton
                                     size="large"
-                                    inputMode="numeric"
-                                    style={{ width: '100%', fontSize: '22px' }}
-                                />
-                            </Form.Item>
+                                    className="auth-submit-button "
+                                    shape="round"
+                                    type="primary"
+                                    htmlType="button"
+                                    loading={isPendingResendOtp}
+                                    onClick={() => {
+                                        resendOtp({ email: email as string });
+                                        setTimeCount(OTP_EXPIRE_TIME);
+                                    }}
+                                >
+                                    Resend OTP
+                                </BaseButton>
+                            ) : (
+                                <BaseButton
+                                    size="large"
+                                    className="auth-submit-button "
+                                    shape="round"
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={isPendingVerifyOtp}
+                                    disabled={timeCount === 0}
+                                >
+                                    Verify OTP
+                                </BaseButton>
+                            )}
+                        </Form.Item>
+                    </Form>
 
-                            <Form.Item>
-                                {timeCount === 0 ? (
-                                    <BaseButton
-                                        size="large"
-                                        className="auth-submit-button "
-                                        shape="round"
-                                        type="primary"
-                                        htmlType="button"
-                                        loading={isPendingResendOtp}
-                                        onClick={() => {
-                                            resendOtp({ email: localStorage.getItem('email') as string });
-                                            setTimeCount(OTP_EXPIRE_TIME);
-                                        }}
-                                    >
-                                        Resend OTP
-                                    </BaseButton>
-                                ) : (
-                                    <BaseButton
-                                        size="large"
-                                        className="auth-submit-button "
-                                        shape="round"
-                                        type="primary"
-                                        htmlType="submit"
-                                        loading={isPendingVerifyOtp}
-                                        disabled={timeCount === 0}
-                                    >
-                                        Verify OTP
-                                    </BaseButton>
-                                )}
-                            </Form.Item>
-                        </Form>
-                    </AuthFormWrapper>
-                )}
-
-                {verifySuccess && ( // Conditionally render success page
-                    <AuthResultPage
-                        icon={SuccessfulIcon}
-                        title="SUCCESSFULLY!"
-                        description="Your account has been created"
-                        btnNavigateTo={PATHS.SIGNIN}
-                        btnText="Back to login"
-                    />
-                )}
+                    {verifySuccess && (
+                        <AuthResultPage
+                            icon={SuccessfulIcon}
+                            title="SUCCESSFULLY!"
+                            description="Your account has been created"
+                            btnNavigateTo={PATHS.SIGNIN}
+                            btnText="Back to login"
+                        />
+                    )}
+                </AuthFormWrapper>
             </AuthPageLayout>
         </div>
     );

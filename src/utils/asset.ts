@@ -1,6 +1,11 @@
-import GoogleIcon from '@/assets/icons/Google.svg';
-import StarIcon from '@/assets/icons/star-icon.svg';
-import SuccessfulIcon from '@/assets/icons/Sticker.svg';
-import Logo from '@/assets/logos/FIFO logo.png';
+import Logo from '@/assets/logos/logo.png'
+import GoogleIcon from '@/assets/icons/Google.svg'
+import SuccessfulIcon from '@/assets/icons/Sticker.svg'
+import StarIcon from "@/assets/icons/star-icon.svg"
 
-export { GoogleIcon, Logo, StarIcon, SuccessfulIcon };
+export  {
+    Logo,
+    GoogleIcon,
+    SuccessfulIcon,
+    StarIcon
+}
